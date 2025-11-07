@@ -29,17 +29,43 @@ class ParserOrchestrator:
 
     Example:
         >>> orchestrator = ParserOrchestrator()
-        >>> orchestrator.register_plugin(EncodingPlugin())
-        >>> orchestrator.register_plugin(DialectPlugin())
         >>> results = orchestrator.parse_file("data.csv", config)
         >>> len(results)
         5
     """
 
-    def __init__(self) -> None:
-        """Initialize orchestrator with empty plugin registry."""
+    def __init__(self, auto_register: bool = True) -> None:
+        """Initialize orchestrator with plugin registry.
+
+        Args:
+            auto_register: If True, automatically register all built-in plugins.
+                          If False, plugins must be manually registered.
+        """
         self.registry = PluginRegistry()
         self._stats: dict[str, Any] = {}
+
+        if auto_register:
+            self._register_default_plugins()
+
+    def _register_default_plugins(self) -> None:
+        """Register all built-in parsing plugins in pipeline order."""
+        # Import here to avoid circular imports
+        from hypoparsr.plugins import (
+            ColumnClassifierPlugin,
+            DataTypePlugin,
+            DialectPlugin,
+            EncodingPlugin,
+            RowClassifierPlugin,
+            TableAreaPlugin,
+        )
+
+        # Register in pipeline order (level 1-6)
+        self.register_plugin(EncodingPlugin())  # Level 1
+        self.register_plugin(DialectPlugin())  # Level 2
+        self.register_plugin(TableAreaPlugin())  # Level 3
+        self.register_plugin(RowClassifierPlugin())  # Level 4
+        self.register_plugin(ColumnClassifierPlugin())  # Level 5
+        self.register_plugin(DataTypePlugin())  # Level 6
 
     def register_plugin(self, plugin: ParsingPlugin) -> None:
         """Register a parsing plugin.

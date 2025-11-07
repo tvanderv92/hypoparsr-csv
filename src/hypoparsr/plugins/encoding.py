@@ -70,8 +70,12 @@ class EncodingPlugin(ParsingPlugin):
 
         hypotheses = []
 
+        # Handle None or empty detection
+        if detection is None:
+            detection = {"encoding": None, "confidence": 0.0}
+
         # Primary hypothesis from chardet
-        if detection["encoding"]:
+        if detection.get("encoding"):
             primary_hypothesis = Hypothesis(
                 level=self.level_name,
                 confidence=detection["confidence"],
@@ -85,7 +89,8 @@ class EncodingPlugin(ParsingPlugin):
 
         # Add fallback encodings with lower confidence
         fallback_encodings = ["utf-8", "latin-1", "cp1252", "ascii"]
-        detected_encoding = detection.get("encoding", "").lower()
+        detected_encoding = detection.get("encoding") or ""
+        detected_encoding = detected_encoding.lower()
 
         for encoding in fallback_encodings:
             # Skip if already detected
