@@ -9,10 +9,10 @@ from hypoparsr import parse_file, ParserConfig
 # Example 1: Custom configuration
 print("=== Example 1: Custom configuration ===")
 config = ParserConfig(
-    max_hypotheses=5,  # Limit number of hypotheses
-    conservative_casting=True,  # Be conservative with type casting
+    pruning_level=0.15,  # Higher threshold for pruning low-confidence branches
+    conservative_type_casting=True,  # Be conservative with type casting
     only_one_table=True,  # Expect only one table
-    min_confidence=0.6,  # Minimum confidence threshold
+    remove_aggregates=True,  # Remove aggregate rows/columns
 )
 
 result = parse_file("../tests/data/original/33aba867-77a6-4cf9-8b8a-11980b7edce8.csv", config=config)

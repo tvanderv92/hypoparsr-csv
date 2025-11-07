@@ -90,10 +90,10 @@ For fine-grained control:
 from hypoparsr import ParserConfig
 
 config = ParserConfig(
-    max_hypotheses=10,
-    conservative_casting=True,
+    pruning_level=0.15,  # Higher pruning threshold
+    conservative_type_casting=True,
     only_one_table=True,
-    min_confidence=0.7,
+    remove_aggregates=True,
 )
 
 result = parse_file("data.csv", config=config)

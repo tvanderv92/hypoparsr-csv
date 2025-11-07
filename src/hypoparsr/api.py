@@ -286,9 +286,9 @@ def get_config_preset(preset: str) -> ParserConfig:
     """Get a predefined configuration preset.
 
     Available presets:
-    - 'strict': Conservative type casting, single table only, high quality threshold
-    - 'lenient': Aggressive type casting, multiple tables, lower quality threshold
-    - 'fast': Fewer hypotheses, quick parsing, good for clean files
+    - 'strict': Conservative type casting, single table only, higher pruning
+    - 'lenient': Aggressive type casting, multiple tables, lower pruning
+    - 'fast': Similar to strict, optimized for clean files
 
     Args:
         preset: Name of preset ('strict', 'lenient', or 'fast').
@@ -305,25 +305,25 @@ def get_config_preset(preset: str) -> ParserConfig:
     """
     presets = {
         "strict": ParserConfig(
-            max_hypotheses=10,
-            conservative_casting=True,
+            pruning_level=0.2,
+            conservative_type_casting=True,
             only_one_table=True,
-            min_confidence=0.7,
-            max_dialect_hypotheses=5,
+            remove_aggregates=True,
+            remove_named_empty_cols=True,
         ),
         "lenient": ParserConfig(
-            max_hypotheses=20,
-            conservative_casting=False,
+            pruning_level=0.05,
+            conservative_type_casting=False,
             only_one_table=False,
-            min_confidence=0.3,
-            max_dialect_hypotheses=10,
+            remove_aggregates=False,
+            remove_named_empty_cols=False,
         ),
         "fast": ParserConfig(
-            max_hypotheses=3,
-            conservative_casting=True,
+            pruning_level=0.15,
+            conservative_type_casting=True,
             only_one_table=True,
-            min_confidence=0.5,
-            max_dialect_hypotheses=3,
+            remove_aggregates=True,
+            remove_named_empty_cols=True,
         ),
     }
 
