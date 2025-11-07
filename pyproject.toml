@@ -1,0 +1,232 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hypoparsr"
+version = "0.1.0"
+description = "Multi-hypothesis CSV parser for messy, real-world data files"
+authors = [
+    { name = "Till Doehmen", email = "till.doehmen@example.com" },
+    { name = "Hannes Muehleisen", email = "hannes@cwi.nl" }
+]
+maintainers = [
+    { name = "Hannes Muehleisen", email = "hannes@cwi.nl" }
+]
+readme = "README.md"
+license = { text = "MPL-2.0" }
+requires-python = ">=3.12"
+keywords = ["csv", "parser", "data-quality", "messy-data", "hypothesis-testing"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Mozilla Public License 2.0 (MPL-2.0)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "pandas>=2.2.0",
+    "chardet>=5.2.0",
+    "anytree>=2.12.0",
+    "python-Levenshtein>=0.25.0",
+    "pydantic>=2.6.0",
+    "numpy>=1.26.0",
+    "scipy>=1.11.0",
+]
+
+[project.optional-dependencies]
+# Development dependencies
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "pytest-benchmark>=4.0.0",
+    "mypy>=1.8.0",
+    "ruff>=0.2.0",
+    "black>=24.1.0",
+    "ipython>=8.20.0",
+    "ipdb>=0.13.13",
+]
+
+# Documentation dependencies
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.24.0",
+]
+
+# Optional performance dependencies
+performance = [
+    "polars>=0.20.0",
+    "charset-normalizer>=3.3.0",
+]
+
+# Optional CLI dependencies
+cli = [
+    "typer>=0.9.0",
+    "rich>=13.7.0",
+]
+
+# All optional dependencies
+all = [
+    "hypoparsr[dev,docs,performance,cli]",
+]
+
+[project.urls]
+Homepage = "https://github.com/tdoehmen/hypoparsr"
+Documentation = "https://hypoparsr.readthedocs.io"
+Repository = "https://github.com/tdoehmen/hypoparsr"
+Issues = "https://github.com/tdoehmen/hypoparsr/issues"
+
+[project.scripts]
+hypoparsr = "hypoparsr.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hypoparsr"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=hypoparsr",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "benchmark: marks tests as benchmarks",
+    "integration: marks tests as integration tests",
+    "regression: marks tests as regression tests",
+]
+
+[tool.coverage.run]
+source = ["src/hypoparsr"]
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/site-packages/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.black]
+line-length = 100
+target-version = ['py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "ANN",  # flake8-annotations
+    "B",    # flake8-bugbear
+    "A",    # flake8-builtins
+    "C4",   # flake8-comprehensions
+    "DTZ",  # flake8-datetimez
+    "T10",  # flake8-debugger
+    "ISC",  # flake8-implicit-str-concat
+    "ICN",  # flake8-import-conventions
+    "PIE",  # flake8-pie
+    "PT",   # flake8-pytest-style
+    "Q",    # flake8-quotes
+    "RSE",  # flake8-raise
+    "RET",  # flake8-return
+    "SIM",  # flake8-simplify
+    "TID",  # flake8-tidy-imports
+    "ARG",  # flake8-unused-arguments
+    "PTH",  # flake8-use-pathlib
+    "ERA",  # eradicate
+    "PD",   # pandas-vet
+    "PL",   # pylint
+    "TRY",  # tryceratops
+    "NPY",  # numpy-specific rules
+    "RUF",  # ruff-specific rules
+]
+
+ignore = [
+    "ANN101",  # missing-type-self
+    "ANN102",  # missing-type-cls
+    "ANN401",  # any-type
+    "PLR0913", # too-many-arguments
+    "PLR0912", # too-many-branches
+    "TRY003",  # raise-vanilla-args
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "ANN",     # no need for type hints in tests
+    "ARG",     # unused arguments in fixtures are ok
+    "PLR2004", # magic values in tests are ok
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["hypoparsr"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+show_error_codes = true
+show_column_numbers = true
+pretty = true
+
+[[tool.mypy.overrides]]
+module = [
+    "anytree.*",
+    "Levenshtein.*",
+]
+ignore_missing_imports = true

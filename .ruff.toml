@@ -1,0 +1,62 @@
+# Ruff configuration file
+# See: https://docs.astral.sh/ruff/
+
+line-length = 100
+target-version = "py312"
+
+[lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "ANN",  # flake8-annotations
+    "B",    # flake8-bugbear
+    "A",    # flake8-builtins
+    "C4",   # flake8-comprehensions
+    "DTZ",  # flake8-datetimez
+    "T10",  # flake8-debugger
+    "ISC",  # flake8-implicit-str-concat
+    "ICN",  # flake8-import-conventions
+    "PIE",  # flake8-pie
+    "PT",   # flake8-pytest-style
+    "Q",    # flake8-quotes
+    "RSE",  # flake8-raise
+    "RET",  # flake8-return
+    "SIM",  # flake8-simplify
+    "TID",  # flake8-tidy-imports
+    "ARG",  # flake8-unused-arguments
+    "PTH",  # flake8-use-pathlib
+    "ERA",  # eradicate
+    "PD",   # pandas-vet
+    "PL",   # pylint
+    "TRY",  # tryceratops
+    "NPY",  # numpy-specific rules
+    "RUF",  # ruff-specific rules
+]
+
+ignore = [
+    "ANN101",  # missing-type-self
+    "ANN102",  # missing-type-cls
+    "ANN401",  # any-type
+    "PLR0913", # too-many-arguments
+    "PLR0912", # too-many-branches
+    "TRY003",  # raise-vanilla-args
+]
+
+[lint.per-file-ignores]
+"tests/**/*.py" = [
+    "ANN",     # no need for type hints in tests
+    "ARG",     # unused arguments in fixtures are ok
+    "PLR2004", # magic values in tests are ok
+]
+
+[lint.isort]
+known-first-party = ["hypoparsr"]
+force-single-line = false
+lines-after-imports = 2
+
+[lint.pydocstyle]
+convention = "google"
